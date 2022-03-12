@@ -8,7 +8,7 @@ const Users = ({users, loading}) => {
     } else {
         return (
         <div style={usersStyle}>
-            {users.map(user => {
+            {users && users.map(user => {
                 return <UserItem key={user.id} user={user} />
             })}
         </div>
