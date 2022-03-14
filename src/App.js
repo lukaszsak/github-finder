@@ -3,16 +3,17 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import './App.css';
 import Navbar from './components/layout/Navbar';
 import Users from './components/users/Users'
+import User from './components/users/User';
 import Search from './components/users/Search';
 import axios from 'axios';
 import { Alert } from './components/layout/Alert';
 import About from './components/pages/About';
-import User from './components/users/User';
 
 class App extends Component {
   state = {
     users: [],
     user: {},
+    repos: [],
     loading: false,
     alert: null
   }
@@ -32,17 +33,25 @@ class App extends Component {
   // get single Github user
   getUser = async username => {
     this.setState({loading: true})
-    console.log('username ::',username)
+
     const res = await axios.get(
       `https://api.github.com/users/${username}?
       client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}
       &client_secret${process.env.REACT_APP_GITHUB_CLIENT_SECRET}`)
 
-    console.log(res)
-    
-    this.setState({user:res.data, loading: false})
+    this.setState({user:res.data, loading: false})  
+  }
   
-    
+  // get user repos
+  getUserRepos = async username => {
+    this.setState({loading: true})
+
+    const res = await axios.get(
+      `https://api.github.com/users/${username}/repos?per_page=5&sort=created:asc&
+      client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}
+      &client_secret${process.env.REACT_APP_GITHUB_CLIENT_SECRET}`)
+
+    this.setState({repos:res.data, loading: false})  
   }
 
   // clears users from state
@@ -54,7 +63,7 @@ class App extends Component {
   }
 
   render(){
-    const { users, loading, alert, user } = this.state
+    const { users, loading, alert, user, repos } = this.state
     return (
       <BrowserRouter>
         <div className="App">
@@ -74,7 +83,7 @@ class App extends Component {
                 )}
               /> 
               <Route path='/about' element={<About/>} />
-              <Route path='/user/:login' element={<User getUser={this.getUser} user={user} loading={loading}/>} />
+              <Route path='/user/:login' element={<User getUser={this.getUser} getUserRepos={this.getUserRepos} user={user} repos={repos} loading={loading}/>} />
             </Routes>
 
           </div>
