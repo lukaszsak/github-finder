@@ -1,7 +1,12 @@
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 import PropTypes from 'prop-types'
+import GithubContext from '../../context/github/githubContext'
 
-const Search = ({setAlert, searchUsers}) => {
+const Search = ({setAlert }) => {
+
+    const githubContext = useContext(GithubContext)
+
+    const { users, searchUsers, clearUsers } = githubContext
 
     const [text, setText] = useState('')
     
@@ -22,13 +27,13 @@ const Search = ({setAlert, searchUsers}) => {
         <form className='form' onSubmit={onSubmitHandler}>
             <input type="text" name="text" placeholder='search users...' value={text} onChange={onChangeHandler}/>
             <input type="submit" value="Search"  className='btn btn-dark btn-block'/>
+            { users.length != 0 && <button className="btn btn-light btn-block" onClick={clearUsers}>Clear</button> }
         </form>
     </div>
     )   
 }
 
 Search.propTypes = {
-    searchUsers: PropTypes.func.isRequired,
     setAlert: PropTypes.func.isRequired
 }
 
