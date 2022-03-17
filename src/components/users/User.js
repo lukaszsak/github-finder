@@ -1,20 +1,20 @@
 import { Fragment, useEffect, useContext } from 'react'
 import Spinner from '../layout/Spinner';
 import Repos from '../repos/Repos';
-import PropTypes from 'prop-types'
 import { Link, useParams } from 'react-router-dom'
 import GithubContext from '../../context/github/githubContext';
 
-const User = ({ repos, getUserRepos}) => {
+const User = () => {
 
     const githubContext = useContext(GithubContext)
-    const { user, getUser, loading } = githubContext
+    const { user, getUser, getUserRepos, repos, loading } = githubContext
 
     const { username } = useParams()
 
     useEffect( () => {
         getUser(username)
         getUserRepos(username)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
     
     const {
@@ -78,11 +78,6 @@ const User = ({ repos, getUserRepos}) => {
             <Repos repos={repos} />
         </Fragment>
     )
-}
-
-User.propTypes = {
-    repos: PropTypes.array.isRequired,
-    getUserRepos: PropTypes.func.isRequired
 }
 
 export default User
